@@ -1,0 +1,62 @@
+@model IEnumerable<Library.BL.DTOs.BorrowingDto>
+@{ ViewData["Title"] = "Emprunts"; }
+
+<div class="page-hero">
+  <div class="page-hero-text">
+    <div class="page-eyebrow">Gestion</div>
+    <h1 class="page-title">Tous les emprunts</h1>
+  </div>
+  <div style="display:flex;gap:.75rem">
+    <a asp-action="Active" class="btn btn-outline">● En cours</a>
+    <a asp-action="Overdue" class="btn btn-outline">⏰ En retard</a>
+    <a asp-action="Create" class="btn btn-gold">＋ Nouvel emprunt</a>
+  </div>
+</div>
+
+@if (!Model.Any())
+{
+  <div class="empty-state">
+    <div class="empty-icon">📋</div>
+    <div class="empty-title">Aucun emprunt enregistré</div>
+    <p style="margin-bottom:1.5rem">Commencez par enregistrer un emprunt.</p>
+    <a asp-action="Create" class="btn btn-gold">＋ Créer un emprunt</a>
+  </div>
+}
+else
+{
+  <div class="library-table-wrap">
+    <table class="library-table">
+      <thead><tr>
+        <th>Livre</th><th>Emprunteur</th><th>Emprunté le</th><th>Échéance</th><th>Retour</th><th>Statut</th><th>Actions</th>
+      </tr></thead>
+      <tbody>
+        @foreach (var b in Model)
+        {
+          <tr>
+            <td class="td-title">@b.BookTitle<br/><span style="font-style:italic;font-size:.85rem;color:var(--muted);font-weight:400">@b.BookAuthor</span></td>
+            <td>@b.BorrowerName @if (!string.IsNullOrEmpty(b.BorrowerEmail)) { <br/><span class="td-mono" style="font-size:.7rem">@b.BorrowerEmail</span> }</td>
+            <td class="td-mono">@b.BorrowDate.ToString("dd/MM/yyyy")</td>
+            <td class="td-mono @(b.IsOverdue ? "\" style=\"color:var(--warning)" : "")">@b.DueDate.ToString("dd/MM/yyyy")</td>
+            <td class="td-mono">@(b.ReturnDate.HasValue ? b.ReturnDate.Value.ToString("dd/MM/yyyy") : "—")</td>
+            <td>
+              @if (b.IsReturned) { <span class="badge badge-returned">Rendu</span> }
+              else if (b.IsOverdue) { <span class="badge badge-overdue">En retard</span> }
+              else { <span class="badge badge-active">En cours</span> }
+            </td>
+            <td>
+              <div style="display:flex;gap:.4rem">
+                @if (!b.IsReturned)
+                { <a asp-action="Return" asp-route-id="@b.Id" class="btn btn-gold btn-sm">↩ Retour</a> }
+                <form asp-action="Delete" method="post" style="display:inline" onsubmit="return confirm('Supprimer cet emprunt ?')">
+                  @Html.AntiForgeryToken()
+                  <input name="id" type="hidden" value="@b.Id"/>
+                  <button type="submit" class="btn btn-danger-outline btn-sm">✕</button>
+                </form>
+              </div>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+}

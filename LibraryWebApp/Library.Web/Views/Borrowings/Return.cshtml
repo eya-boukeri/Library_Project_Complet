@@ -1,0 +1,49 @@
+@model Library.BL.DTOs.BorrowingDto
+@{ ViewData["Title"] = "Retour du livre"; }
+
+<div class="page-hero">
+  <div class="page-hero-text">
+    <div class="page-eyebrow">Gestion</div>
+    <h1 class="page-title">Retour de livre</h1>
+  </div>
+  <a asp-action="Index" class="btn btn-outline">← Retour</a>
+</div>
+
+<div class="form-card">
+  <div class="form-card-header"><h2>Confirmer le retour</h2></div>
+  <div class="form-card-body">
+    <div style="background:var(--parchment);border-radius:4px;padding:1.5rem;margin-bottom:1.75rem;border-left:4px solid var(--gold)">
+      <div style="font-family:'Playfair Display',serif;font-size:1.4rem;color:var(--navy);margin-bottom:.25rem">@Model.BookTitle</div>
+      <div style="font-style:italic;color:var(--muted);margin-bottom:.75rem">@Model.BookAuthor</div>
+      <div style="display:flex;gap:2rem;flex-wrap:wrap">
+        <div>
+          <div class="page-eyebrow" style="margin-bottom:.2rem">Emprunteur</div>
+          <div>@Model.BorrowerName</div>
+        </div>
+        <div>
+          <div class="page-eyebrow" style="margin-bottom:.2rem">Emprunté le</div>
+          <div class="mono">@Model.BorrowDate.ToString("dd/MM/yyyy")</div>
+        </div>
+        <div>
+          <div class="page-eyebrow" style="margin-bottom:.2rem">Échéance</div>
+          <div class="mono" style="@(Model.IsOverdue ? "color:var(--warning);font-weight:600" : "")">
+            @Model.DueDate.ToString("dd/MM/yyyy")
+            @if (Model.IsOverdue) { <span class="badge badge-overdue" style="margin-left:.5rem">En retard</span> }
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <form asp-action="Return" asp-route-id="@Model.Id" method="post">
+      @Html.AntiForgeryToken()
+      <div class="form-group" style="margin-bottom:1.25rem">
+        <label class="form-label">Notes de retour (optionnel)</label>
+        <textarea name="notes" class="form-control" placeholder="État du livre, remarques…">@Model.Notes</textarea>
+      </div>
+      <div class="form-actions">
+        <button type="submit" class="btn btn-gold btn-lg">↩ Confirmer le retour</button>
+        <a asp-action="Index" class="btn btn-outline">Annuler</a>
+      </div>
+    </form>
+  </div>
+</div>

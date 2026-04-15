@@ -1,0 +1,51 @@
+@model IEnumerable<Library.BL.DTOs.BorrowingDto>
+@{ ViewData["Title"] = "Emprunts en cours"; }
+
+<div class="page-hero">
+  <div class="page-hero-text">
+    <div class="page-eyebrow">Gestion</div>
+    <h1 class="page-title">Emprunts en cours</h1>
+    <p class="page-subtitle">@Model.Count() emprunt(s) actif(s)</p>
+  </div>
+  <div style="display:flex;gap:.75rem">
+    <a asp-action="Index" class="btn btn-outline">← Tous les emprunts</a>
+    <a asp-action="Create" class="btn btn-gold">＋ Nouvel emprunt</a>
+  </div>
+</div>
+
+@if (!Model.Any())
+{
+  <div class="empty-state">
+    <div class="empty-icon">✅</div>
+    <div class="empty-title">Aucun emprunt en cours</div>
+    <p>Tous les livres ont été retournés.</p>
+  </div>
+}
+else
+{
+  <div class="library-table-wrap">
+    <table class="library-table">
+      <thead><tr><th>Livre</th><th>Emprunteur</th><th>Emprunté le</th><th>Échéance</th><th>Jours restants</th><th>Actions</th></tr></thead>
+      <tbody>
+        @foreach (var b in Model)
+        {
+          var days = (b.DueDate - DateTime.UtcNow).Days;
+          <tr>
+            <td class="td-title">@b.BookTitle</td>
+            <td>@b.BorrowerName</td>
+            <td class="td-mono">@b.BorrowDate.ToString("dd/MM/yyyy")</td>
+            <td class="td-mono">@b.DueDate.ToString("dd/MM/yyyy")</td>
+            <td>
+              @if (days < 0) { <span class="badge badge-overdue">@Math.Abs(days) j de retard</span> }
+              else if (days <= 3) { <span class="badge badge-overdue">@days j</span> }
+              else { <span class="badge badge-active">@days j</span> }
+            </td>
+            <td>
+              <a asp-action="Return" asp-route-id="@b.Id" class="btn btn-gold btn-sm">↩ Retour</a>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+}

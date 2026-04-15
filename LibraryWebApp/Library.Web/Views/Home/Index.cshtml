@@ -1,0 +1,97 @@
+@model Library.BL.DTOs.DashboardDto
+@{ ViewData["Title"] = "Tableau de bord"; }
+
+<div class="dash-hero">
+  <div class="dash-hero-title">Bienvenue dans Folio</div>
+  <div class="dash-hero-sub">Votre bibliothèque personnelle, élégamment gérée.</div>
+  <div class="dash-hero-actions">
+    <a asp-controller="Books" asp-action="Create" class="btn btn-gold btn-lg">＋ Ajouter un livre</a>
+    <a asp-controller="Borrowings" asp-action="Create" class="btn btn-outline btn-lg" style="color:var(--ivory);border-color:rgba(245,240,232,.3)">◎ Nouvel emprunt</a>
+  </div>
+</div>
+
+<div class="stats-grid">
+  <div class="stat-card">
+    <div class="stat-icon">📚</div>
+    <div class="stat-value">@Model.TotalBooks</div>
+    <div class="stat-label">Livres au total</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-icon">✅</div>
+    <div class="stat-value">@Model.AvailableBooks</div>
+    <div class="stat-label">Disponibles</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-icon">📤</div>
+    <div class="stat-value">@Model.ActiveBorrowings</div>
+    <div class="stat-label">Emprunts actifs</div>
+  </div>
+  <div class="stat-card @(Model.OverdueBorrowings > 0 ? "danger" : "")">
+    <div class="stat-icon">⏰</div>
+    <div class="stat-value">@Model.OverdueBorrowings</div>
+    <div class="stat-label">En retard</div>
+  </div>
+</div>
+
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:2rem;flex-wrap:wrap">
+
+  <div>
+    <h2 class="section-title">Derniers ajouts</h2>
+    @if (!Model.RecentBooks.Any())
+    {
+      <div class="empty-state"><div class="empty-icon">📖</div><div class="empty-title">Aucun livre encore</div></div>
+    }
+    else
+    {
+      <div style="display:flex;flex-direction:column;gap:.75rem">
+        @foreach (var b in Model.RecentBooks)
+        {
+          <div style="background:white;border-radius:6px;padding:1rem 1.25rem;box-shadow:var(--shadow-sm);display:flex;align-items:center;gap:1rem;border:1px solid rgba(138,111,48,.1)">
+            <div style="font-size:1.8rem;opacity:.6">📕</div>
+            <div style="flex:1;min-width:0">
+              <div style="font-family:'Playfair Display',serif;font-weight:600;color:var(--navy);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">@b.Title</div>
+              <div style="font-style:italic;color:var(--muted);font-size:.9rem">@b.Author</div>
+            </div>
+            <span class="badge @(b.IsAvailable ? "badge-available" : "badge-unavailable")">
+              @(b.IsAvailable ? "Disponible" : "Emprunté")
+            </span>
+            <a asp-controller="Books" asp-action="Details" asp-route-id="@b.Id" class="btn btn-outline btn-sm">Voir</a>
+          </div>
+        }
+      </div>
+    }
+  </div>
+
+  <div>
+    <h2 class="section-title">Emprunts récents</h2>
+    @if (!Model.RecentBorrowings.Any())
+    {
+      <div class="empty-state"><div class="empty-icon">📋</div><div class="empty-title">Aucun emprunt</div></div>
+    }
+    else
+    {
+      <div style="display:flex;flex-direction:column;gap:.75rem">
+        @foreach (var br in Model.RecentBorrowings)
+        {
+          <div style="background:white;border-radius:6px;padding:1rem 1.25rem;box-shadow:var(--shadow-sm);border:1px solid rgba(138,111,48,.1)">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:.5rem">
+              <div>
+                <div style="font-family:'Playfair Display',serif;font-weight:600;color:var(--navy);font-size:.98rem">@br.BookTitle</div>
+                <div style="font-family:'DM Mono',monospace;font-size:.68rem;color:var(--muted)">@br.BorrowerName</div>
+              </div>
+              @if (br.IsReturned)
+              {<span class="badge badge-returned">Rendu</span>}
+              else if (br.IsOverdue)
+              {<span class="badge badge-overdue">En retard</span>}
+              else
+              {<span class="badge badge-active">En cours</span>}
+            </div>
+            <div style="font-family:'DM Mono',monospace;font-size:.65rem;color:var(--muted);margin-top:.4rem">
+              Échéance : @br.DueDate.ToString("dd/MM/yyyy")
+            </div>
+          </div>
+        }
+      </div>
+    }
+  </div>
+</div>

@@ -1,0 +1,73 @@
+@model Library.BL.DTOs.BookDto
+@{ ViewData["Title"] = Model.Title; }
+@using Library.BL.Interfaces
+@inject IBorrowingService BorrowingService
+
+<div class="detail-card" style="margin-bottom:2rem">
+  <div class="detail-hero">
+    <div class="detail-cover">
+      @if (!string.IsNullOrEmpty(Model.CoverImageUrl))
+      { <img src="@Model.CoverImageUrl" alt="@Model.Title"/> }
+      else { <span>📖</span> }
+    </div>
+    <div class="detail-info">
+      <h1 class="detail-title">@Model.Title</h1>
+      <div class="detail-author">@Model.Author</div>
+      <div class="detail-meta">
+        @if (!string.IsNullOrEmpty(Model.Genre))   { <span class="meta-chip">@Model.Genre</span> }
+        @if (Model.PublicationYear.HasValue)        { <span class="meta-chip">@Model.PublicationYear</span> }
+        @if (!string.IsNullOrEmpty(Model.Publisher)){ <span class="meta-chip">@Model.Publisher</span> }
+        @if (!string.IsNullOrEmpty(Model.ISBN))     { <span class="meta-chip mono">ISBN @Model.ISBN</span> }
+      </div>
+      <span class="badge @(Model.IsAvailable ? "badge-available" : "badge-unavailable")">
+        @(Model.IsAvailable ? "● Disponible" : "● Emprunté")
+      </span>
+      @if (!string.IsNullOrEmpty(Model.Description))
+      { <p class="detail-desc" style="margin-top:1rem">@Model.Description</p> }
+    </div>
+  </div>
+  <div class="detail-body">
+    <div style="display:flex;gap:.75rem;margin-bottom:2rem;flex-wrap:wrap">
+      @if (Model.IsAvailable)
+      { <a asp-controller="Borrowings" asp-action="Create" asp-route-bookId="@Model.Id" class="btn btn-gold">◎ Emprunter ce livre</a> }
+      <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-outline">✎ Modifier</a>
+      <a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-danger-outline">✕ Supprimer</a>
+      <a asp-action="Index" class="btn btn-outline">← Retour</a>
+    </div>
+
+    @{
+      var borrowings = (await BorrowingService.GetBorrowingsByBookAsync(Model.Id)).ToList();
+    }
+    <h2 class="section-title">Historique des emprunts (@borrowings.Count)</h2>
+    @if (!borrowings.Any())
+    {
+      <p style="color:var(--muted);font-style:italic">Aucun emprunt enregistré pour ce livre.</p>
+    }
+    else
+    {
+      <div class="library-table-wrap">
+        <table class="library-table">
+          <thead><tr>
+            <th>Emprunteur</th><th>Date d'emprunt</th><th>Échéance</th><th>Retour</th><th>Statut</th>
+          </tr></thead>
+          <tbody>
+            @foreach (var b in borrowings)
+            {
+              <tr>
+                <td class="td-title">@b.BorrowerName <br/><span style="font-family:'DM Mono',monospace;font-size:.7rem;color:var(--muted);font-weight:400">@b.BorrowerEmail</span></td>
+                <td class="td-mono">@b.BorrowDate.ToString("dd/MM/yyyy")</td>
+                <td class="td-mono">@b.DueDate.ToString("dd/MM/yyyy")</td>
+                <td class="td-mono">@(b.ReturnDate.HasValue ? b.ReturnDate.Value.ToString("dd/MM/yyyy") : "—")</td>
+                <td>
+                  @if (b.IsReturned) { <span class="badge badge-returned">Rendu</span> }
+                  else if (b.IsOverdue) { <span class="badge badge-overdue">En retard</span> }
+                  else { <span class="badge badge-active">En cours</span> }
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+  </div>
+</div>

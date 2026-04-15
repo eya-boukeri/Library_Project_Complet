@@ -1,0 +1,61 @@
+@model Library.BL.DTOs.CreateBookDto
+@{ ViewData["Title"] = "Nouveau livre"; }
+
+<div class="page-hero">
+  <div class="page-hero-text">
+    <div class="page-eyebrow">Collection</div>
+    <h1 class="page-title">Nouveau livre</h1>
+  </div>
+  <a asp-action="Index" class="btn btn-outline">← Retour</a>
+</div>
+
+<div class="form-card">
+  <div class="form-card-header"><h2>Informations du livre</h2></div>
+  <div class="form-card-body">
+    <form asp-action="Create" method="post">
+      @Html.AntiForgeryToken()
+      <div asp-validation-summary="ModelOnly" class="alert alert-danger" style="display:none"></div>
+      <div class="form-grid">
+        <div class="form-group full">
+          <label class="form-label" asp-for="Title"></label>
+          <input asp-for="Title" class="form-control" placeholder="Ex: Le Comte de Monte-Cristo"/>
+          <span asp-validation-for="Title" class="field-error"></span>
+        </div>
+        <div class="form-group full">
+          <label class="form-label" asp-for="Author"></label>
+          <input asp-for="Author" class="form-control" placeholder="Ex: Alexandre Dumas"/>
+          <span asp-validation-for="Author" class="field-error"></span>
+        </div>
+        <div class="form-group">
+          <label class="form-label" asp-for="ISBN"></label>
+          <input asp-for="ISBN" class="form-control mono" placeholder="978-X-XX-XXXXXX-X"/>
+        </div>
+        <div class="form-group">
+          <label class="form-label" asp-for="Genre"></label>
+          <input asp-for="Genre" class="form-control" placeholder="Ex: Roman historique"/>
+        </div>
+        <div class="form-group">
+          <label class="form-label" asp-for="PublicationYear"></label>
+          <input asp-for="PublicationYear" type="number" class="form-control" placeholder="Ex: 1844"/>
+          <span asp-validation-for="PublicationYear" class="field-error"></span>
+        </div>
+        <div class="form-group">
+          <label class="form-label" asp-for="Publisher"></label>
+          <input asp-for="Publisher" class="form-control" placeholder="Ex: Gallimard"/>
+        </div>
+        <div class="form-group full">
+          <label class="form-label" asp-for="CoverImageUrl"></label>
+          <input asp-for="CoverImageUrl" class="form-control" placeholder="https://…"/>
+        </div>
+        <div class="form-group full">
+          <label class="form-label" asp-for="Description"></label>
+          <textarea asp-for="Description" class="form-control" placeholder="Résumé ou description du livre…"></textarea>
+        </div>
+      </div>
+      <div class="form-actions">
+        <button type="submit" class="btn btn-gold btn-lg">＋ Créer le livre</button>
+        <a asp-action="Index" class="btn btn-outline">Annuler</a>
+      </div>
+    </form>
+  </div>
+</div>

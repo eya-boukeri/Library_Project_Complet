@@ -1,0 +1,66 @@
+@model Library.BL.DTOs.UpdateBookDto
+@{ ViewData["Title"] = "Modifier le livre"; }
+
+<div class="page-hero">
+  <div class="page-hero-text">
+    <div class="page-eyebrow">Collection</div>
+    <h1 class="page-title">Modifier le livre</h1>
+  </div>
+  <a asp-action="Index" class="btn btn-outline">← Retour</a>
+</div>
+
+<div class="form-card">
+  <div class="form-card-header"><h2>Modifier : @Model.Title</h2></div>
+  <div class="form-card-body">
+    <form asp-action="Edit" method="post">
+      @Html.AntiForgeryToken()
+      <input asp-for="Id" type="hidden"/>
+      <div class="form-grid">
+        <div class="form-group full">
+          <label class="form-label" asp-for="Title"></label>
+          <input asp-for="Title" class="form-control"/>
+          <span asp-validation-for="Title" class="field-error"></span>
+        </div>
+        <div class="form-group full">
+          <label class="form-label" asp-for="Author"></label>
+          <input asp-for="Author" class="form-control"/>
+          <span asp-validation-for="Author" class="field-error"></span>
+        </div>
+        <div class="form-group">
+          <label class="form-label" asp-for="ISBN"></label>
+          <input asp-for="ISBN" class="form-control mono"/>
+        </div>
+        <div class="form-group">
+          <label class="form-label" asp-for="Genre"></label>
+          <input asp-for="Genre" class="form-control"/>
+        </div>
+        <div class="form-group">
+          <label class="form-label" asp-for="PublicationYear"></label>
+          <input asp-for="PublicationYear" type="number" class="form-control"/>
+        </div>
+        <div class="form-group">
+          <label class="form-label" asp-for="Publisher"></label>
+          <input asp-for="Publisher" class="form-control"/>
+        </div>
+        <div class="form-group full">
+          <label class="form-label" asp-for="CoverImageUrl"></label>
+          <input asp-for="CoverImageUrl" class="form-control"/>
+        </div>
+        <div class="form-group full">
+          <label class="form-label" asp-for="Description"></label>
+          <textarea asp-for="Description" class="form-control"></textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label">
+            <input asp-for="IsAvailable" type="checkbox" style="margin-right:.5rem"/>
+            Disponible
+          </label>
+        </div>
+      </div>
+      <div class="form-actions">
+        <button type="submit" class="btn btn-gold btn-lg">✓ Enregistrer</button>
+        <a asp-action="Index" class="btn btn-outline">Annuler</a>
+      </div>
+    </form>
+  </div>
+</div>

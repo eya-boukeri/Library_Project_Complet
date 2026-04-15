@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>@ViewData["Title"] — Folio Bibliothèque</title>
+    <link rel="stylesheet" href="~/css/site.css" />
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><text y='26' font-size='28'>📖</text></svg>"/>
+</head>
+<body>
+
+<nav class="navbar">
+  <div class="navbar-inner">
+    <a class="navbar-brand" asp-controller="Home" asp-action="Index">
+      <div class="brand-icon">📖</div>
+      <div class="brand-text">
+        <span class="brand-title">Folio</span>
+        <span class="brand-sub">Bibliothèque</span>
+      </div>
+    </a>
+    <ul class="nav-links">
+      <li><a asp-controller="Home" asp-action="Index"><span class="nav-icon">◈</span> Tableau de bord</a></li>
+      <li><a asp-controller="Books" asp-action="Index"><span class="nav-icon">◉</span> Livres</a></li>
+      <li><a asp-controller="Borrowings" asp-action="Index"><span class="nav-icon">◎</span> Emprunts</a></li>
+      <li><a asp-controller="Borrowings" asp-action="Active"><span class="nav-icon">●</span> En cours</a></li>
+    </ul>
+    <div class="navbar-end">
+      <form class="search-form" asp-controller="Books" asp-action="Index" method="get">
+        <input class="search-input" type="search" name="search" placeholder="Rechercher un livre…" />
+        <button class="btn btn-gold btn-sm" type="submit">⌕</button>
+      </form>
+    </div>
+  </div>
+</nav>
+
+<main class="page-wrapper">
+  @if (TempData["Success"] != null)
+  {
+    <div class="alert alert-success">✓ @TempData["Success"]</div>
+  }
+  @if (TempData["Error"] != null)
+  {
+    <div class="alert alert-danger">✕ @TempData["Error"]</div>
+  }
+  @RenderBody()
+</main>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <span class="footer-brand">Folio — Bibliothèque</span>
+    <span class="footer-copy">© @DateTime.Now.Year · Gestion de Bibliothèque · ASP.NET Core MVC</span>
+  </div>
+</footer>
+
+</body>
+</html>

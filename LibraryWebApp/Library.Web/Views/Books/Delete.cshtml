@@ -1,0 +1,29 @@
+@model Library.BL.DTOs.BookDto
+@{ ViewData["Title"] = "Supprimer le livre"; }
+
+<div class="page-hero">
+  <div class="page-hero-text">
+    <div class="page-eyebrow">Collection</div>
+    <h1 class="page-title">Supprimer un livre</h1>
+  </div>
+</div>
+
+<div class="delete-card">
+  <div class="delete-card-header"><h2>Confirmer la suppression</h2></div>
+  <div class="delete-card-body">
+    <p style="margin-bottom:1.25rem;font-size:1rem">
+      Êtes-vous sûr de vouloir supprimer le livre suivant ? Cette action est <strong>irréversible</strong>.
+    </p>
+    <div style="background:var(--parchment);border-radius:4px;padding:1.25rem;margin-bottom:1.5rem;border-left:4px solid var(--danger)">
+      <div style="font-family:'Playfair Display',serif;font-size:1.3rem;color:var(--navy);margin-bottom:.2rem">@Model.Title</div>
+      <div style="font-style:italic;color:var(--muted)">@Model.Author</div>
+      @if (!string.IsNullOrEmpty(Model.ISBN)) { <div class="mono" style="font-size:.75rem;color:var(--muted);margin-top:.3rem">@Model.ISBN</div> }
+    </div>
+    <form asp-action="Delete" method="post" style="display:flex;gap:1rem;flex-wrap:wrap">
+      @Html.AntiForgeryToken()
+      <input name="id" type="hidden" value="@Model.Id"/>
+      <button type="submit" class="btn btn-danger-outline btn-lg">✕ Supprimer définitivement</button>
+      <a asp-action="Index" class="btn btn-outline btn-lg">← Annuler</a>
+    </form>
+  </div>
+</div>

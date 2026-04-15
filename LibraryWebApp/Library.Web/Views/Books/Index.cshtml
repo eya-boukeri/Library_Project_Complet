@@ -1,0 +1,56 @@
+@model IEnumerable<Library.BL.DTOs.BookDto>
+@{ ViewData["Title"] = "Livres"; }
+
+<div class="page-hero">
+  <div class="page-hero-text">
+    <div class="page-eyebrow">Collection</div>
+    <h1 class="page-title">Bibliothèque</h1>
+    @if (!string.IsNullOrEmpty(ViewBag.Search as string))
+    {<p class="page-subtitle">Résultats pour « @ViewBag.Search »</p>}
+  </div>
+  <a asp-action="Create" class="btn btn-gold">＋ Nouveau livre</a>
+</div>
+
+@if (!Model.Any())
+{
+  <div class="empty-state">
+    <div class="empty-icon">📚</div>
+    <div class="empty-title">Aucun livre trouvé</div>
+    <p style="margin-bottom:1.5rem">@(string.IsNullOrEmpty(ViewBag.Search as string) ? "Commencez par ajouter un livre à la collection." : "Essayez un autre terme de recherche.")</p>
+    <a asp-action="Create" class="btn btn-gold">＋ Ajouter un livre</a>
+  </div>
+}
+else
+{
+  <div class="books-grid">
+    @foreach (var book in Model)
+    {
+      <div class="book-card">
+        <div class="book-cover">
+          @if (!string.IsNullOrEmpty(book.CoverImageUrl))
+          { <img src="@book.CoverImageUrl" alt="@book.Title"/> }
+          else
+          { <div class="book-cover-placeholder">📖</div> }
+          @if (!string.IsNullOrEmpty(book.Genre))
+          { <span class="book-genre-badge">@book.Genre</span> }
+          <div class="availability-dot">
+            <span class="dot @(book.IsAvailable ? "dot-available" : "dot-unavailable")"></span>
+            @(book.IsAvailable ? "Disponible" : "Emprunté")
+          </div>
+        </div>
+        <div class="book-body">
+          <div class="book-title">@book.Title</div>
+          <div class="book-author">@book.Author</div>
+          @if (book.PublicationYear.HasValue)
+          { <div class="book-year">@book.PublicationYear</div> }
+          <div class="book-actions">
+            <a asp-action="Details" asp-route-id="@book.Id" class="btn btn-outline btn-sm">Détails</a>
+            <a asp-action="Edit" asp-route-id="@book.Id" class="btn btn-outline btn-sm">Modifier</a>
+            @if (book.IsAvailable)
+            { <a asp-controller="Borrowings" asp-action="Create" asp-route-bookId="@book.Id" class="btn btn-gold btn-sm">Emprunter</a> }
+          </div>
+        </div>
+      </div>
+    }
+  </div>
+}
