@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Http;
 
 namespace Library.BL.DTOs
 {
@@ -18,6 +19,9 @@ namespace Library.BL.DTOs
         public bool IsAvailable { get; set; }
         public DateTime CreatedAt { get; set; }
         public string? CoverImageUrl { get; set; }
+        public string? CoverImageSrc => string.IsNullOrWhiteSpace(CoverImageUrl)
+            ? null
+            : (CoverImageUrl.StartsWith("~") ? CoverImageUrl : $"~/{CoverImageUrl.TrimStart('/')}" );
         public int BorrowingsCount { get; set; }
     }
 
@@ -53,8 +57,14 @@ namespace Library.BL.DTOs
         [Display(Name = "Description")]
         public string? Description { get; set; }
 
-        [Display(Name = "Image de couverture (URL)")]
         public string? CoverImageUrl { get; set; }
+
+        public string? CoverImageSrc => string.IsNullOrWhiteSpace(CoverImageUrl)
+            ? null
+            : (CoverImageUrl.StartsWith("~") ? CoverImageUrl : $"~/{CoverImageUrl.TrimStart('/')}" );
+
+        [Display(Name = "Image de couverture")]
+        public IFormFile? CoverImageFile { get; set; }
     }
 
     public class UpdateBookDto : CreateBookDto

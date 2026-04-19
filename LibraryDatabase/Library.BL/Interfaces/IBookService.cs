@@ -13,6 +13,7 @@ namespace Library.BL.Interfaces
         Task<BookDto> UpdateBookAsync(UpdateBookDto dto);
         Task DeleteBookAsync(int id);
         Task<IEnumerable<BookDto>> SearchBooksAsync(string searchTerm);
+        Task<IEnumerable<BookDto>> GetBooksByInitialAsync(string initial);
         Task<DashboardDto> GetDashboardDataAsync();
     }
 }

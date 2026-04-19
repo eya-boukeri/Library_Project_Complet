@@ -73,5 +73,20 @@ namespace Library.DAL.Repositories
                 .OrderBy(b => b.Title)
                 .ToListAsync();
         }
+
+        public async Task<IEnumerable<Book>> GetByInitialAsync(string initial)
+        {
+            if (string.IsNullOrWhiteSpace(initial))
+            {
+                return await GetAllAsync();
+            }
+
+            var normalizedInitial = initial.Trim();
+
+            return await _context.Books
+                .Where(b => b.Title.StartsWith(normalizedInitial))
+                .OrderBy(b => b.Title)
+                .ToListAsync();
+        }
     }
 }

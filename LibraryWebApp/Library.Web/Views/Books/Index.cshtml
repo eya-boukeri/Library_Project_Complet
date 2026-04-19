@@ -1,14 +1,27 @@
 @model IEnumerable<Library.BL.DTOs.BookDto>
 @{ ViewData["Title"] = "Livres"; }
+@{
+  var currentLetter = ViewBag.CurrentLetter as string;
+  var alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+}
 
 <div class="page-hero">
   <div class="page-hero-text">
     <div class="page-eyebrow">Collection</div>
     <h1 class="page-title">Bibliothèque</h1>
-    @if (!string.IsNullOrEmpty(ViewBag.Search as string))
+    @if (!string.IsNullOrEmpty(currentLetter))
+    {<p class="page-subtitle">Livres commençant par « @currentLetter »</p>}
+    else if (!string.IsNullOrEmpty(ViewBag.Search as string))
     {<p class="page-subtitle">Résultats pour « @ViewBag.Search »</p>}
   </div>
   <a asp-action="Create" class="btn btn-gold">＋ Nouveau livre</a>
+</div>
+
+<div class="alphabet-filter">
+  @foreach (var letter in alphabet)
+  {
+    <a asp-action="Index" asp-route-letter="@letter" class="alphabet-chip @(currentLetter == letter.ToString() ? "active" : "")">@letter</a>
+  }
 </div>
 
 @if (!Model.Any())
@@ -16,7 +29,7 @@
   <div class="empty-state">
     <div class="empty-icon">📚</div>
     <div class="empty-title">Aucun livre trouvé</div>
-    <p style="margin-bottom:1.5rem">@(string.IsNullOrEmpty(ViewBag.Search as string) ? "Commencez par ajouter un livre à la collection." : "Essayez un autre terme de recherche.")</p>
+    <p style="margin-bottom:1.5rem">@(string.IsNullOrEmpty(currentLetter) ? (string.IsNullOrEmpty(ViewBag.Search as string) ? "Commencez par ajouter un livre à la collection." : "Essayez un autre terme de recherche.") : $"Aucun livre ne commence par la lettre {currentLetter}.")</p>
     <a asp-action="Create" class="btn btn-gold">＋ Ajouter un livre</a>
   </div>
 }
@@ -27,8 +40,8 @@ else
     {
       <div class="book-card">
         <div class="book-cover">
-          @if (!string.IsNullOrEmpty(book.CoverImageUrl))
-          { <img src="@book.CoverImageUrl" alt="@book.Title"/> }
+          @if (!string.IsNullOrEmpty(book.CoverImageSrc))
+          { <img src="@Url.Content(book.CoverImageSrc)" alt="@book.Title"/> }
           else
           { <div class="book-cover-placeholder">📖</div> }
           @if (!string.IsNullOrEmpty(book.Genre))

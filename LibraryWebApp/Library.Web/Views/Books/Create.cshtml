@@ -12,9 +12,9 @@
 <div class="form-card">
   <div class="form-card-header"><h2>Informations du livre</h2></div>
   <div class="form-card-body">
-    <form asp-action="Create" method="post">
+  <form asp-action="Create" method="post" enctype="multipart/form-data">
       @Html.AntiForgeryToken()
-      <div asp-validation-summary="ModelOnly" class="alert alert-danger" style="display:none"></div>
+      <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
       <div class="form-grid">
         <div class="form-group full">
           <label class="form-label" asp-for="Title"></label>
@@ -44,8 +44,10 @@
           <input asp-for="Publisher" class="form-control" placeholder="Ex: Gallimard"/>
         </div>
         <div class="form-group full">
-          <label class="form-label" asp-for="CoverImageUrl"></label>
-          <input asp-for="CoverImageUrl" class="form-control" placeholder="https://…"/>
+          <label class="form-label" asp-for="CoverImageFile"></label>
+          <input asp-for="CoverImageFile" type="file" class="form-control" accept=".jpg,.jpeg,.png,.webp,.gif,image/*"/>
+          <small class="text-muted">Formats acceptés: JPG, PNG, WEBP, GIF.</small>
+          <span asp-validation-for="CoverImageFile" class="field-error"></span>
         </div>
         <div class="form-group full">
           <label class="form-label" asp-for="Description"></label>

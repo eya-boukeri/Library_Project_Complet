@@ -30,6 +30,9 @@ h1,h2,h3,h4,h5{font-family:'Playfair Display',Georgia,serif;font-weight:600;lett
 .search-input{background:rgba(255,255,255,.07);border:1px solid rgba(201,168,76,.25);border-radius:3px;padding:.45rem 1rem;color:var(--ivory);font-family:'Cormorant Garamond',serif;font-size:.95rem;width:200px;transition:var(--transition)}
 .search-input::placeholder{color:rgba(245,240,232,.35)}
 .search-input:focus{outline:none;border-color:var(--gold);background:rgba(255,255,255,.1);width:250px}
+.alphabet-filter{display:flex;flex-wrap:wrap;gap:.4rem;margin:1rem 0 1.75rem}
+.alphabet-chip{display:inline-flex;align-items:center;justify-content:center;min-width:2.25rem;padding:.45rem .65rem;border:1px solid rgba(201,168,76,.25);border-radius:999px;color:var(--ivory);text-decoration:none;background:rgba(255,255,255,.04);transition:var(--transition);font-family:'DM Mono',monospace;font-size:.82rem}
+.alphabet-chip:hover,.alphabet-chip.active{background:var(--gold);border-color:var(--gold);color:var(--navy)}
 
 /* LAYOUT */
 .page-wrapper{flex:1;max-width:1280px;margin:0 auto;width:100%;padding:2.5rem 2rem 4rem}

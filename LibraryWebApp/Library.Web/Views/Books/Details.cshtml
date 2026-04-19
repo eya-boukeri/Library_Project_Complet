@@ -7,7 +7,7 @@
   <div class="detail-hero">
     <div class="detail-cover">
       @if (!string.IsNullOrEmpty(Model.CoverImageUrl))
-      { <img src="@Model.CoverImageUrl" alt="@Model.Title"/> }
+      { <img src="@Url.Content(Model.CoverImageUrl)" alt="@Model.Title"/> }
       else { <span>📖</span> }
     </div>
     <div class="detail-info">

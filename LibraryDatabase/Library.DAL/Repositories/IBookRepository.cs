@@ -14,5 +14,6 @@ namespace Library.DAL.Repositories
         Task DeleteAsync(int id);
         Task<bool> ExistsAsync(int id);
         Task<IEnumerable<Book>> SearchAsync(string searchTerm);
+        Task<IEnumerable<Book>> GetByInitialAsync(string initial);
     }
 }

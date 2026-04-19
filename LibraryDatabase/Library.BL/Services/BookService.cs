@@ -5,6 +5,8 @@ using Library.DAL.Repositories;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Globalization;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace Library.BL.Services
@@ -92,6 +94,21 @@ namespace Library.BL.Services
             return books.Select(MapToDto);
         }
 
+        public async Task<IEnumerable<BookDto>> GetBooksByInitialAsync(string initial)
+        {
+            if (string.IsNullOrWhiteSpace(initial))
+            {
+                return await GetAllBooksAsync();
+            }
+
+            var normalizedInitial = NormalizeText(initial).FirstOrDefault();
+            var books = await _bookRepo.GetAllAsync();
+
+            return books
+                .Where(book => NormalizeText(book.Title).StartsWith(normalizedInitial.ToString(), StringComparison.OrdinalIgnoreCase))
+                .Select(MapToDto);
+        }
+
         public async Task<DashboardDto> GetDashboardDataAsync()
         {
             var allBooks = (await _bookRepo.GetAllAsync()).ToList();
@@ -124,6 +141,23 @@ namespace Library.BL.Services
             CreatedAt = b.CreatedAt,
             CoverImageUrl = b.CoverImageUrl
         };
+
+        private static string NormalizeText(string value)
+        {
+            var normalized = value.Normalize(NormalizationForm.FormD);
+            var builder = new StringBuilder(normalized.Length);
+
+            foreach (var character in normalized)
+            {
+                var unicodeCategory = CharUnicodeInfo.GetUnicodeCategory(character);
+                if (unicodeCategory != UnicodeCategory.NonSpacingMark)
+                {
+                    builder.Append(character);
+                }
+            }
+
+            return builder.ToString().Normalize(NormalizationForm.FormC).Trim();
+        }
 
         private static BorrowingDto MapBorrowingToDto(DAL.Models.Borrowing br) => new()
         {
